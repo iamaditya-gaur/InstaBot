@@ -213,8 +213,8 @@ def fetch_special_posts(user_name):
                         else:
                             flag = 0
                             i = 0
-                            if user_info["data"][i]["location"]["id"]:
-                                for i in range(l):
+                            for i in range(l):
+                                if user_info["data"][i]["location"]:
                                     if (str(user_info["data"][i]["location"]["id"]) == location_id):
                                         # Checking if the post is related to natural disaster using wordnet and then downloding it.
                                         a = "tsunami, high-pressure, volcano, tornado, avalanche, earthquake, blizzard, drought, bushfire, tremor, dust storm, magma, twister, windstorm, heat wave, cyclone, forest fire, flood, fire, hailstorm, lava, lightning, natural_disasters, hail, hurricane, seismic, erosion, whirlpool, Richter_scale, whirlwind, cloud, thunderstorm, barometer, gale, blackout, gust, force, low-pressure, volt, snowstorm, rainstorm, storm, nimbus, violent_storm, sandstorm, casualty, Beaufort_scale, fatal, fatality, cumulonimbus, death, lost, destruction, money, tension, cataclysm, damage, uproot, underground, destroy, arsonist, wind_scale, arson, rescue, permafrost, disaster, fault"
@@ -222,21 +222,20 @@ def fetch_special_posts(user_name):
                                         l = len(list)
                                         index = 0
                                         #checks the caption for the keywords
-                                        if user_info["data"][i]["caption"]:
-                                            for index in range(l):
-                                                syn = wordnet.synsets(list[index])
-                                                if syn:
-                                                    j = len(syn)
-                                                    for k in range(j):
-                                                        if syn[k].lemmas():
-                                                            a = len(syn[k].lemmas())
-                                                            for b in range(a):
-                                                                cap = user_info["data"][i]["caption"]["text"]
-                                                                cap = cap.split()
-                                                                x = len(cap)
-                                                                for y in range(x):
-                                                                    if cap[y] == syn[k].lemmas()[b].name():
-                                                                        flag = 1
+                                        for index in range(l):
+                                            syn = wordnet.synsets(list[index])
+                                            if syn:
+                                                j = len(syn)
+                                                for k in range(j):
+                                                    if syn[k].lemmas():
+                                                        a = len(syn[k].lemmas())
+                                                        for b in range(a):
+                                                            cap = user_info["data"][i]["caption"]["text"]
+                                                            cap = cap.split()
+                                                            x = len(cap)
+                                                            for y in range(x):
+                                                                if cap[y] == syn[k].lemmas()[b].name():
+                                                                    flag = 1
                                         if flag is 0:
                                             print("Sorry, No post was found with similar conditions!!")
                                         else:
@@ -253,8 +252,8 @@ def fetch_special_posts(user_name):
                                                 img_name = str(user_info["data"][i]["id"]) + '.jpeg'
                                                 urllib.urlretrieve(img_url, img_name)
 
-                                    else:
-                                        print("No post was found for the chosen location!!")
+                                else:
+                                    print("No post was found for the chosen location!!")
                     else:
                         print("Sorry, some error occurred!! ")
 
