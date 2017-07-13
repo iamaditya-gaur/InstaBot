@@ -1,6 +1,9 @@
 #TODO complete the objectives for get another user's post sec.
+#TODO add a parameter in get_posts to check for menu call or funcn call
+# -*- coding: UTF-8 -*-
 import requests
 import urllib
+from nltk.corpus import wordnet
 # A global variable for storing an access token.
 APP_ACCESS_TOKEN = '648921853.d9f41e8.a9e9b36da55647b1ac5841df098222b5'
 # Global variable for storing the base url
@@ -174,6 +177,93 @@ def post_comment(user_name):
         print("Your comment was successfully posted!!")
     else:
         print("Response code other than 200 was recieved!!")
+
+# Method to fetch the posts of disaster struck areas by analysing their caption and taking location as input.
+def fetch_special_posts(user_name):
+    location = raw_input("Enter the location for which you want to fetch posts for : ")
+    google_url = "https://maps.googleapis.com/maps/api/geocode/json?address=%s" %(location)
+    location_info = requests.get(google_url).json()
+    longitude = str(location_info["results"][0]["geometry"]["location"]["lng"])
+    latitude = str(location_info["results"][0]["geometry"]["location"]["lat"])
+    location_info = requests.get((BASE_URL + "locations/search?lat=%s&lng=%s&access_token=%s") % (latitude,longitude,APP_ACCESS_TOKEN)).json()
+    if location_info["meta"]["code"] is 200:
+        if location_info["data"]:
+            i = 0
+            i = len(location_info["data"])
+            if i is 0:
+                print("Sorry, no reults were found for the location that you entered!!")
+            else:
+                print("%s Locations found for your search!!\nSelect one from the following list to proceed : ") %(str(i))
+                index = 0
+                for index in range(i):
+                    print(("%d. %s") %(index+1 , location_info["data"][index]["name"]))
+                ans = raw_input("Enter your choice : ")
+                if ans < (i+1):
+                    print "Enter correct value!!"
+                else:
+                    ans = int(ans)
+                    ans -= 1
+                    location_id = str(location_info["data"][ans]["id"])
+                    user_info = requests.get(BASE_URL + ("users/self/media/recent/?access_token=%s") % (APP_ACCESS_TOKEN)).json()
+                    if user_info["meta"]["code"] is 200:
+                        l = 0
+                        l = len(user_info["data"])
+                        if l is 0:
+                            print("Sorry, this user has no posts!!")
+                        else:
+                            flag = 0
+                            i = 0
+                            if user_info["data"][i]["location"]["id"]:
+                                for i in range(l):
+                                    if (str(user_info["data"][i]["location"]["id"]) == location_id):
+                                        # Checking if the post is related to natural disaster using wordnet and then downloding it.
+                                        a = "tsunami, high-pressure, volcano, tornado, avalanche, earthquake, blizzard, drought, bushfire, tremor, dust storm, magma, twister, windstorm, heat wave, cyclone, forest fire, flood, fire, hailstorm, lava, lightning, natural_disasters, hail, hurricane, seismic, erosion, whirlpool, Richter_scale, whirlwind, cloud, thunderstorm, barometer, gale, blackout, gust, force, low-pressure, volt, snowstorm, rainstorm, storm, nimbus, violent_storm, sandstorm, casualty, Beaufort_scale, fatal, fatality, cumulonimbus, death, lost, destruction, money, tension, cataclysm, damage, uproot, underground, destroy, arsonist, wind_scale, arson, rescue, permafrost, disaster, fault"
+                                        list = a.split(', ')
+                                        l = len(list)
+                                        index = 0
+                                        #checks the caption for the keywords
+                                        if user_info["data"][i]["caption"]:
+                                            for index in range(l):
+                                                syn = wordnet.synsets(list[index])
+                                                if syn:
+                                                    j = len(syn)
+                                                    for k in range(j):
+                                                        if syn[k].lemmas():
+                                                            a = len(syn[k].lemmas())
+                                                            for b in range(a):
+                                                                cap = user_info["data"][i]["caption"]["text"]
+                                                                cap = cap.split()
+                                                                x = len(cap)
+                                                                for y in range(x):
+                                                                    if cap[y] == syn[k].lemmas()[b].name():
+                                                                        flag = 1
+                                        if flag is 0:
+                                            print("Sorry, No post was found with similar conditions!!")
+                                        else:
+                                            print("Matching Post was found, it will now be downloaded!")
+                                            if user_info["data"][i]["type"] == "carousel":
+                                                s = len(user_info["data"][i]["carousel_media"])
+                                                index = 0
+                                                for index in range(s):
+                                                    img_url = user_info["data"][i]["carousel_media"][index]["images"]["standard_resolution"]["url"]
+                                                    img_name = str(user_info["data"][i]["id"]) + str(index + 1) + '.jpeg'
+                                                    urllib.urlretrieve(img_url, img_name)
+                                            elif user_info["data"][i]["type"] == "image":
+                                                img_url = user_info["data"][i]["images"]["standard_resolution"]["url"]
+                                                img_name = str(user_info["data"][i]["id"]) + '.jpeg'
+                                                urllib.urlretrieve(img_url, img_name)
+
+                                    else:
+                                        print("No post was found for the chosen location!!")
+                    else:
+                        print("Sorry, some error occurred!! ")
+
+
+    else:
+        print("Response code other than 200 received !!")
+
+fetch_special_posts("indian.bloke")
+
 
 
 
