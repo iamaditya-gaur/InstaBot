@@ -1,5 +1,3 @@
-#TODO complete the objectives for get another user's post sec.
-#TODO add a parameter in get_posts to check for menu call or funcn call
 # -*- coding: UTF-8 -*-
 import requests
 import urllib
@@ -20,13 +18,13 @@ def get_user_id(user_name):
             return None
 
     else:
-        print("Response code other than 200 received!!")
-        print("Error type : %s") %(user_id["meta"]["error_type"])
+        print("\033[31mResponse code other than 200 received!!")
+        print("\033[31mError type : %s") %(user_id["meta"]["error_type"])
 
 # Method to Display the user info, let's you choose b/w self info and info using User ID
 def get_info(user_name):
-    ans = raw_input("1. Carry the operation for yourself.\n2. Carry the operation for some other user .")
-    if ans == '1':
+    ans = raw_input("a. Carry the operation for yourself.\nb. Carry the operation for some other user .")
+    if ans.upper == 'A':
         request_url = BASE_URL + "users/self/?access_token=%s" %(APP_ACCESS_TOKEN)
         user_info = requests.get(request_url).json()
         if user_info["meta"]["code"] is 200:
@@ -40,9 +38,9 @@ def get_info(user_name):
             else:
                 exit()
         else:
-            print("Response code other than 200 received!!")
-            print("Error type : %s") % (user_info["meta"]["error_type"])
-    elif ans == '2' :
+            print("\033[31mResponse code other than 200 received!!")
+            print("\033[31mError type : %s") % (user_info["meta"]["error_type"])
+    elif ans.upper == 'B' :
         user_name = raw_input("Enter the username of the user : ")
         get_id = str(get_user_id(user_name))
         if get_id is None:
@@ -61,16 +59,16 @@ def get_info(user_name):
                 else:
                     return None
             else:
-                print("Response code other than 200 received!!")
-                print("Error type : %s") % (user_info["meta"]["error_type"])
+                print("\033[31mResponse code other than 200 received!!")
+                print("\033[31mError type : %s") % (user_info["meta"]["error_type"])
     else:
-        print("Please select correct Input!!")
+        print("\033[31mPlease select correct Input!!")
 
 # Method to retrieve the recent posts , let's you choose b/w your posts or using different User ID and returns the post ID
 # and returns none if there is no data.
 def get_posts(user_name):
-    ans = raw_input("1. Carry the operation for yourself.\n2. Carry the operation for some other user .")
-    if ans == '1':
+    ans = raw_input("a. Carry the operation for yourself.\nb. Carry the operation for some other user .")
+    if ans.upper == 'A':
         user_info = requests.get(BASE_URL + ("users/self/media/recent/?access_token=%s") %(APP_ACCESS_TOKEN)).json()
         if user_info["meta"]["code"] is 200:
             if len(user_info["data"]) :
@@ -90,19 +88,19 @@ def get_posts(user_name):
                     urllib.urlretrieve(img_url,img_name)
                     return user_info["data"][0]["id"]
                 else:
-                    print("This type of media isn't supported yet!! Stay Tuned for more.")
+                    print("\033[31mThis type of media isn't supported yet!! Stay Tuned for more.")
                     exit()
             else:
                 exit()
 
         else:
-            print("Response code other than 200 received!!")
-            print("Error type : %s") % (user_info["meta"]["error_type"])
-    elif ans == '2':
+            print("\033[31mResponse code other than 200 received!!")
+            print("\033[31mError type : %s") % (user_info["meta"]["error_type"])
+    elif ans.upper == 'B':
         user_name = raw_input("Enter the username of the user : ")
         usr_id = get_user_id(user_name)
         if usr_id is None:
-            print ("Sorry, the user name was not found!!")
+            print ("\033[31mSorry, the user name was not found!!")
         else:
             usr_id = str(usr_id)
             user_info = requests.get((BASE_URL + "users/%s/media/recent/?access_token=%s") %(usr_id , APP_ACCESS_TOKEN)).json()
@@ -122,16 +120,17 @@ def get_posts(user_name):
                         urllib.urlretrieve(img_url,img_name)
                         return user_info["data"][0]["id"]
                     else:
-                        print("This type of media isn't supported yet!! Stay Tuned for more.")
+                        print("\033[31mThis type of media isn't supported yet!! Stay Tuned for more.")
                         exit()
                 else:
                     return None
 
             else:
-                print("Response code other than 200 received!!")
-                priint("Error type : %s") %(user_info["meta"]["error_type"])
+                print("\033[31mResponse code other than 200 received!!")
+                priint("\033[31mError type : %s") %(user_info["meta"]["error_type"])
     else:
-        print "Enter a correct value!! "
+        print "\033[31mEnter a correct value!! "
+
 # Method to download the recent liked media of the user.
 def recent_liked_media():
     user_info = requests.get(BASE_URL + ("users/self/media/recent/?access_token=%s") % (APP_ACCESS_TOKEN)).json()
@@ -140,21 +139,21 @@ def recent_liked_media():
         img_name = str(user_info["data"][0]["id"]) + '.jpeg'
         urllib.urlretrieve(img_url , img_name)
     else:
-        print("Response Code other than 200 recieved!!")
+        print("\033[31mResponse Code other than 200 recieved!!")
 
 # Method to post a like on the recent media accepting the username of the user and download the post for confirmation.
 def post_like(user_name):
     media_id = get_posts(user_name)
     if media_id == None:
-        print ("Username not found!!")
+        print ("\033[31mUsername not found!!")
     else:
         url = BASE_URL +("media/%s/likes") %(media_id)
         payload = {"access_token":APP_ACCESS_TOKEN}
         like_info = requests.post(url , payload).json()
         if like_info["meta"]["code"] is 200:
-            print("Your like successfully posted.")
+            print("\033[32mYour like successfully posted.")
         else:
-            print("Like was not posted due to some error.")
+            print("\033[31mLike was not posted due to some error.")
 
 # Method to get a list of all the comments on a user's post and download the post for confirmation.
 def get_comments(user_name):
@@ -167,9 +166,9 @@ def get_comments(user_name):
             for index in range(no_of_comm):
                 print("%s. %s") %(str(index+1) , comment_info["data"][index]["text"])
         else:
-            print("No comment was found !!")
+            print("\033[31mNo comment was found !!")
     else:
-        print("Response code other than 200 found!!")
+        print("\033[31mResponse code other than 200 found!!")
 
 # Method to post a comment on a user's recent post using it's user name and download the post for confirmation.
 def post_comment(user_name):
@@ -179,9 +178,9 @@ def post_comment(user_name):
     payload = {"access_token": APP_ACCESS_TOKEN, "text": comment}
     comment_info = requests.post(url, payload).json()
     if comment_info["meta"]["code"] is 200:
-        print("Your comment was successfully posted!!")
+        print("\033[32mYour comment was successfully posted!!")
     else:
-        print("Response code other than 200 was recieved!!")
+        print("\033[31mResponse code other than 200 was recieved!!")
 
 # Method to fetch the posts of disaster struck areas by analysing their caption and taking location as input.
 def fetch_special_posts(user_name):
@@ -277,15 +276,15 @@ def fetch_special_posts(user_name):
 # Method to start the bot.
 def start_bot(user_name):
     while True:
-        print '\nHere are your menu options:'
-        print "a.Get details about a user\n"
-        print "b.Get the recent post of a user\n"
-        print "c.Like the recent  post of a user\n"
-        print "d.Get the recent media liked by you\n"
-        print "e.Get a list of comments on the recent post of a user\n"
-        print "f.Make a comment on the recent post of a user\n"
-        print "g.Fetch special posts related to natural disasters for a particular location\n"
-        print "h.Exit"
+        print '\033[34mHere are your menu options:\n'
+        print "\033[34mA.Get details about a user\n"
+        print "\033[34mB.Get the recent post of a user\n"
+        print "\033[34mB.Like the recent  post of a user\n"
+        print "\033[34mD.Get the recent media liked by you\n"
+        print "\033[34mE.Get a list of comments on the recent post of a user\n"
+        print "\033[34mF.Make a comment on the recent post of a user\n"
+        print "\033[34mG.Fetch special posts related to natural disasters for a particular location\n"
+        print "\033[34mH.Exit"
         choice = raw_input("Enter you choice: ")
         if choice.upper() == 'A':
             get_info(user_name)
@@ -304,8 +303,23 @@ def start_bot(user_name):
         if choice.upper() == 'H':
             exit()
 print '\n'
-print 'Hey! Welcome to instaBot!'
-user_name = raw_input("Kindly enter your username for which the Access Token is valid : ")
+print('''\033[35m 
+
+ .----------------. .-----------------..----------------. .----------------. .----------------. .----------------. .----------------. .----------------. 
+| .--------------. | .--------------. | .--------------. | .--------------. | .--------------. | .--------------. | .--------------. | .--------------. |
+| |     _____    | | | ____  _____  | | |    _______   | | |  _________   | | |      __      | | |   ______     | | |     ____     | | |  _________   | |
+| |    |_   _|   | | ||_   \|_   _| | | |   /  ___  |  | | | |  _   _  |  | | |     /  \     | | |  |_   _ \    | | |   .'    `.   | | | |  _   _  |  | |
+| |      | |     | | |  |   \ | |   | | |  |  (__ \_|  | | | |_/ | | \_|  | | |    / /\ \    | | |    | |_) |   | | |  /  .--.  \  | | | |_/ | | \_|  | |
+| |      | |     | | |  | |\ \| |   | | |   '.___`-.   | | |     | |      | | |   / ____ \   | | |    |  __'.   | | |  | |    | |  | | |     | |      | |
+| |     _| |_    | | | _| |_\   |_  | | |  |`\____) |  | | |    _| |_     | | | _/ /    \ \_ | | |   _| |__) |  | | |  \  `--'  /  | | |    _| |_     | |
+| |    |_____|   | | ||_____|\____| | | |  |_______.'  | | |   |_____|    | | ||____|  |____|| | |  |_______/   | | |   `.____.'   | | |   |_____|    | |
+| |              | | |              | | |              | | |              | | |              | | |              | | |              | | |              | |
+| '--------------' | '--------------' | '--------------' | '--------------' | '--------------' | '--------------' | '--------------' | '--------------' |
+ '----------------' '----------------' '----------------' '----------------' '----------------' '----------------' '----------------' '----------------' 
+
+        \033[0m''')
+print '\033[1mHey! Welcome to instaBot!'
+user_name = raw_input("\033[1m Kindly enter your username for which the Access Token is valid : ")
 start_bot(user_name)
 
 
