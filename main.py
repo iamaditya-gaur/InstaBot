@@ -24,7 +24,7 @@ def get_user_id(user_name):
 # Method to Display the user info, let's you choose b/w self info and info using User ID
 def get_info(user_name):
     ans = raw_input("a. Carry the operation for yourself.\nb. Carry the operation for some other user .")
-    if ans.upper == 'A':
+    if ans.upper() == 'A':
         request_url = BASE_URL + "users/self/?access_token=%s" %(APP_ACCESS_TOKEN)
         user_info = requests.get(request_url).json()
         if user_info["meta"]["code"] is 200:
@@ -40,7 +40,7 @@ def get_info(user_name):
         else:
             print("\033[31mResponse code other than 200 received!!")
             print("\033[31mError type : %s") % (user_info["meta"]["error_type"])
-    elif ans.upper == 'B' :
+    elif ans.upper() == 'B' :
         user_name = raw_input("Enter the username of the user : ")
         get_id = str(get_user_id(user_name))
         if get_id is None:
@@ -68,7 +68,7 @@ def get_info(user_name):
 # and returns none if there is no data.
 def get_posts(user_name):
     ans = raw_input("a. Carry the operation for yourself.\nb. Carry the operation for some other user .")
-    if ans.upper == 'A':
+    if ans.upper() == 'A':
         user_info = requests.get(BASE_URL + ("users/self/media/recent/?access_token=%s") %(APP_ACCESS_TOKEN)).json()
         if user_info["meta"]["code"] is 200:
             if len(user_info["data"]) :
@@ -96,7 +96,7 @@ def get_posts(user_name):
         else:
             print("\033[31mResponse code other than 200 received!!")
             print("\033[31mError type : %s") % (user_info["meta"]["error_type"])
-    elif ans.upper == 'B':
+    elif ans.upper() == 'B':
         user_name = raw_input("Enter the username of the user : ")
         usr_id = get_user_id(user_name)
         if usr_id is None:
