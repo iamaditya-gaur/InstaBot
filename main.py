@@ -3,7 +3,7 @@ import requests
 import urllib
 from nltk.corpus import wordnet
 # A global variable for storing an access token.
-APP_ACCESS_TOKEN = 'ENTER_YOUR_ACCESS_TOKEN_HERE'
+APP_ACCESS_TOKEN = '648921853.d9f41e8.aecd3330117c46d289a561c68b657ce3'
 # Global variable for storing the base url
 BASE_URL = 'https://api.instagram.com/v1/'
 
@@ -320,6 +320,285 @@ print('''\033[35m
         \033[0m''')
 print '\033[1mHey! Welcome to instaBot!'
 user_name = raw_input("\033[1m Kindly enter your username for which the Access Token is valid : ")
-start_bot(user_name)
+#start_bot(user_name)
 
+# Method to select posts with some special criterion
+def special_selection():
+    print("Select one of the following : ")
+    print("A. Select the post with minimum number of likes ")
+    print("B. Select the post with maximum number of likes ")
+    print("C. Select the post with minimum number of comments ")
+    print("D. Select the post with maximum number of likes ")
+    print("E. Select the post containing a particular text in caption field ")
+    print("F. Select the most recent post ")
+    ans = raw_input("Enter your choice : ")
+    if ans.upper() == 'A':
+        ch = raw_input("a. Carry the operation for yourself.\nb. Carry the operation for some other user .")
+        if ch.upper() == 'A':
+            user_info = requests.get(
+                BASE_URL + ("users/self/media/recent/?access_token=%s") % (APP_ACCESS_TOKEN)).json()
+            if user_info["meta"]["code"] is 200:
+                if len(user_info["data"]):
+                    i = len(user_info["data"])
+                    final_index = None
+                    min_likes = user_info["data"][0]["likes"]["count"]
+                    index = 0
+                    for index in range(i):
+                        if user_info["data"][index]["likes"]["count"] < min_likes:
+                            final_index = index
+                    if final_index is None:
+                        if user_info["data"][0]["type"] == "carousel":
+                            i = len(user_info["data"][0]["carousel_media"])
+                            index = 0
+                            for index in range(i):
+                                img_url = \
+                                    user_info["data"][0]["carousel_media"][index]["images"]["standard_resolution"][
+                                        "url"]
+                                img_name = str(user_info["data"][0]["id"]) + str(index + 1) + '.jpeg'
+                                urllib.urlretrieve(img_url, img_name)
+                                return user_info["data"][0]["id"]
+
+
+                        elif user_info["data"][0]["type"] == "image":
+                            img_url = user_info["data"][0]["images"]["standard_resolution"]["url"]
+                            img_name = str(user_info["data"][0]["id"]) + '.jpeg'
+                            urllib.urlretrieve(img_url, img_name)
+                            return user_info["data"][0]["id"]
+                        else:
+                            print("\033[31mThis type of media isn't supported yet!! Stay Tuned for more.")
+                            exit()
+                    else:
+                        if user_info["data"][final_index]["type"] == "carousel":
+                            i = len(user_info["data"][final_index]["carousel_media"])
+                            index = 0
+                            for index in range(i):
+                                img_url = \
+                                    user_info["data"][final_index]["carousel_media"][index]["images"][
+                                        "standard_resolution"][
+                                        "url"]
+                                img_name = str(user_info["data"][final_index]["id"]) + str(index + 1) + '.jpeg'
+                                urllib.urlretrieve(img_url, img_name)
+                            return user_info["data"][final_index]["id"]
+
+
+                        elif user_info["data"][final_index]["type"] == "image":
+                            img_url = user_info["data"][final_index]["images"]["standard_resolution"]["url"]
+                            img_name = str(user_info["data"][final_index]["id"]) + '.jpeg'
+                            urllib.urlretrieve(img_url, img_name)
+                            return user_info["data"][final_index]["id"]
+                        else:
+                            print("\033[31mThis type of media isn't supported yet!! Stay Tuned for more.")
+                            exit()
+                else:
+                    print("\033[31mNo posts were found for this user!!")
+            else:
+                print("\033[31mResponse Code other than 200 received!!")
+        elif ch.upper() == 'B':
+            user_name = raw_input("Enter the username of the user : ")
+            usr_id = get_user_id(user_name)
+            if usr_id is None:
+                print ("\033[31mSorry, the user name was not found!!")
+            else:
+                usr_id = str(usr_id)
+                user_info = requests.get(
+                    (BASE_URL + "users/%s/media/recent/?access_token=%s") % (usr_id, APP_ACCESS_TOKEN)).json()
+                if user_info["meta"]["code"] is 200:
+                    if len(user_info["data"]):
+                        i = len(user_info["data"])
+                        final_index = None
+                        min_likes = user_info["data"][0]["likes"]["count"]
+                        index = 0
+                        for index in range(i):
+                            if user_info["data"][index]["likes"]["count"] < min_likes:
+                                final_index = index
+                        if final_index is None:
+                            if user_info["data"][0]["type"] == "carousel":
+                                i = len(user_info["data"][0]["carousel_media"])
+                                index = 0
+                                for index in range(i):
+                                    img_url = \
+                                        user_info["data"][0]["carousel_media"][index]["images"][
+                                            "standard_resolution"][
+                                            "url"]
+                                    img_name = str(user_info["data"][0]["id"]) + str(index + 1) + '.jpeg'
+                                    urllib.urlretrieve(img_url, img_name)
+                                return user_info["data"][0]["id"]
+
+
+                            elif user_info["data"][0]["type"] == "image":
+                                img_url = user_info["data"][0]["images"]["standard_resolution"]["url"]
+                                img_name = str(user_info["data"][0]["id"]) + '.jpeg'
+                                urllib.urlretrieve(img_url, img_name)
+                                return user_info["data"][0]["id"]
+                            else:
+                                print("\033[31mThis type of media isn't supported yet!! Stay Tuned for more.")
+                                exit()
+                        else:
+                            if user_info["data"][final_index]["type"] == "carousel":
+                                i = len(user_info["data"][final_index]["carousel_media"])
+                                index = 0
+                                for index in range(i):
+                                    img_url = \
+                                        user_info["data"][final_index]["carousel_media"][index]["images"][
+                                            "standard_resolution"][
+                                            "url"]
+                                    img_name = str(user_info["data"][final_index]["id"]) + str(
+                                        index + 1) + '.jpeg'
+                                    urllib.urlretrieve(img_url, img_name)
+                                return user_info["data"][final_index]["id"]
+
+
+                            elif user_info["data"][final_index]["type"] == "image":
+                                img_url = user_info["data"][final_index]["images"]["standard_resolution"]["url"]
+                                img_name = str(user_info["data"][final_index]["id"]) + '.jpeg'
+                                urllib.urlretrieve(img_url, img_name)
+                                return user_info["data"][final_index]["id"]
+                            else:
+                                print("\033[31mThis type of media isn't supported yet!! Stay Tuned for more.")
+                                exit()
+                    else:
+                        print("\033[31mNo posts were found for this user!!")
+                else:
+                    print("\033[31mResponse Code other than 200 received!!")
+        else:
+            print("\033[31mEnter a correct value!!")
+
+    elif ans.upper() == 'B':
+        ch = raw_input("a. Carry the operation for yourself.\nb. Carry the operation for some other user .")
+        if ch.upper() == 'A':
+            user_info = requests.get(
+                BASE_URL + ("users/self/media/recent/?access_token=%s") % (APP_ACCESS_TOKEN)).json()
+            if user_info["meta"]["code"] is 200:
+                if len(user_info["data"]):
+                    i = len(user_info["data"])
+                    final_index = None
+                    max_likes = user_info["data"][0]["likes"]["count"]
+                    index = 0
+                    for index in range(i):
+                        if user_info["data"][index]["likes"]["count"] > max_likes:
+                            final_index = index
+                    if final_index is None:
+                        if user_info["data"][0]["type"] == "carousel":
+                            i = len(user_info["data"][0]["carousel_media"])
+                            index = 0
+                            for index in range(i):
+                                img_url = \
+                                    user_info["data"][0]["carousel_media"][index]["images"][
+                                        "standard_resolution"][
+                                        "url"]
+                                img_name = str(user_info["data"][0]["id"]) + str(index + 1) + '.jpeg'
+                                urllib.urlretrieve(img_url, img_name)
+                            return user_info["data"][0]["id"]
+
+
+                        elif user_info["data"][0]["type"] == "image":
+                            img_url = user_info["data"][0]["images"]["standard_resolution"]["url"]
+                            img_name = str(user_info["data"][0]["id"]) + '.jpeg'
+                            urllib.urlretrieve(img_url, img_name)
+                            return user_info["data"][0]["id"]
+                        else:
+                            print("\033[31mThis type of media isn't supported yet!! Stay Tuned for more.")
+                            exit()
+                    else:
+                        if user_info["data"][final_index]["type"] == "carousel":
+                            i = len(user_info["data"][final_index]["carousel_media"])
+                            index = 0
+                            for index in range(i):
+                                img_url = \
+                                    user_info["data"][final_index]["carousel_media"][index]["images"][
+                                        "standard_resolution"][
+                                        "url"]
+                                img_name = str(user_info["data"][final_index]["id"]) + str(index + 1) + '.jpeg'
+                                urllib.urlretrieve(img_url, img_name)
+                            return user_info["data"][final_index]["id"]
+
+
+                        elif user_info["data"][final_index]["type"] == "image":
+                            img_url = user_info["data"][final_index]["images"]["standard_resolution"]["url"]
+                            img_name = str(user_info["data"][final_index]["id"]) + '.jpeg'
+                            urllib.urlretrieve(img_url, img_name)
+                            return user_info["data"][final_index]["id"]
+                        else:
+                            print("\033[31mThis type of media isn't supported yet!! Stay Tuned for more.")
+                            exit()
+                else:
+                    print("\033[31mNo posts were found for this user!!")
+        elif ch.upper() == 'B':
+            user_name = raw_input("Enter the username of the user : ")
+            usr_id = get_user_id(user_name)
+            if usr_id is None:
+                print ("\033[31mSorry, the user name was not found!!")
+            else:
+                usr_id = str(usr_id)
+                user_info = requests.get(
+                    (BASE_URL + "users/%s/media/recent/?access_token=%s") % (usr_id, APP_ACCESS_TOKEN)).json()
+                if user_info["meta"]["code"] is 200:
+                    if len(user_info["data"]):
+                        i = len(user_info["data"])
+                        final_index = None
+                        max_likes = user_info["data"][0]["likes"]["count"]
+                        index = 0
+                        for index in range(i):
+                            if user_info["data"][index]["likes"]["count"] < max_likes:
+                                final_index = index
+                        if final_index is None:
+                            if user_info["data"][0]["type"] == "carousel":
+                                i = len(user_info["data"][0]["carousel_media"])
+                                index = 0
+                                for index in range(i):
+                                    img_url = \
+                                        user_info["data"][0]["carousel_media"][index]["images"][
+                                            "standard_resolution"][
+                                            "url"]
+                                    img_name = str(user_info["data"][0]["id"]) + str(index + 1) + '.jpeg'
+                                    urllib.urlretrieve(img_url, img_name)
+                                return user_info["data"][0]["id"]
+
+
+                            elif user_info["data"][0]["type"] == "image":
+                                img_url = user_info["data"][0]["images"]["standard_resolution"]["url"]
+                                img_name = str(user_info["data"][0]["id"]) + '.jpeg'
+                                urllib.urlretrieve(img_url, img_name)
+                                return user_info["data"][0]["id"]
+                            else:
+                                print("\033[31mThis type of media isn't supported yet!! Stay Tuned for more.")
+                                exit()
+                        else:
+                            if user_info["data"][final_index]["type"] == "carousel":
+                                i = len(user_info["data"][final_index]["carousel_media"])
+                                index = 0
+                                for index in range(i):
+                                    img_url = \
+                                        user_info["data"][final_index]["carousel_media"][index]["images"][
+                                            "standard_resolution"][
+                                            "url"]
+                                    img_name = str(user_info["data"][final_index]["id"]) + str(
+                                        index + 1) + '.jpeg'
+                                    urllib.urlretrieve(img_url, img_name)
+                                return user_info["data"][final_index]["id"]
+
+
+                            elif user_info["data"][final_index]["type"] == "image":
+                                img_url = user_info["data"][final_index]["images"]["standard_resolution"]["url"]
+                                img_name = str(user_info["data"][final_index]["id"]) + '.jpeg'
+                                urllib.urlretrieve(img_url, img_name)
+                                return user_info["data"][final_index]["id"]
+                            else:
+                                print("\033[31mThis type of media isn't supported yet!! Stay Tuned for more.")
+                                exit()
+                    else:
+                        print("\033[31mNo posts were found for this user!!")
+        else:
+            print("\033[31mEnter a correct value!!")
+
+    elif ans.upper() == 'C':
+        print("...")
+    elif ans.upper() == 'D':
+        print("...")
+    elif ans.upper() == 'E':
+        print("...")
+    elif ans.upper() == 'F':
+        print("...")
+    else:
+        print("\033[31mEnter correct value!!")
 
