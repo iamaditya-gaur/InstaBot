@@ -3,7 +3,7 @@ import requests
 import urllib
 from nltk.corpus import wordnet
 # A global variable for storing an access token.
-APP_ACCESS_TOKEN = '648921853.d9f41e8.aecd3330117c46d289a561c68b657ce3'
+APP_ACCESS_TOKEN = 'YOUR_ACCESS_TOKEN_GOES_HERE'
 # Global variable for storing the base url
 BASE_URL = 'https://api.instagram.com/v1/'
 
