@@ -272,56 +272,6 @@ def fetch_special_posts(user_name):
     except IndexError:
         print("Enter a valid value !!")
 
-
-# Method to start the bot.
-def start_bot(user_name):
-    while True:
-        print '\033[34mHere are your menu options:\n'
-        print "\033[34mA.Get details about a user\n"
-        print "\033[34mB.Get the recent post of a user\n"
-        print "\033[34mB.Like the recent  post of a user\n"
-        print "\033[34mD.Get the recent media liked by you\n"
-        print "\033[34mE.Get a list of comments on the recent post of a user\n"
-        print "\033[34mF.Make a comment on the recent post of a user\n"
-        print "\033[34mG.Fetch special posts related to natural disasters for a particular location\n"
-        print "\033[34mH.Exit"
-        choice = raw_input("Enter you choice: ")
-        if choice.upper() == 'A':
-            get_info(user_name)
-        if choice.upper() == 'B':
-            get_posts(user_name)
-        if choice.upper() == 'C':
-            post_like(user_name)
-        if choice.upper() == 'D':
-            recent_liked_media()
-        if choice.upper() == 'E':
-            get_info(user_name)
-        if choice.upper() == 'F':
-            post_comment(user_name)
-        if choice.upper() == 'G':
-            fetch_special_posts(user_name)
-        if choice.upper() == 'H':
-            exit()
-print '\n'
-print('''\033[35m 
-
- .----------------. .-----------------..----------------. .----------------. .----------------. .----------------. .----------------. .----------------. 
-| .--------------. | .--------------. | .--------------. | .--------------. | .--------------. | .--------------. | .--------------. | .--------------. |
-| |     _____    | | | ____  _____  | | |    _______   | | |  _________   | | |      __      | | |   ______     | | |     ____     | | |  _________   | |
-| |    |_   _|   | | ||_   \|_   _| | | |   /  ___  |  | | | |  _   _  |  | | |     /  \     | | |  |_   _ \    | | |   .'    `.   | | | |  _   _  |  | |
-| |      | |     | | |  |   \ | |   | | |  |  (__ \_|  | | | |_/ | | \_|  | | |    / /\ \    | | |    | |_) |   | | |  /  .--.  \  | | | |_/ | | \_|  | |
-| |      | |     | | |  | |\ \| |   | | |   '.___`-.   | | |     | |      | | |   / ____ \   | | |    |  __'.   | | |  | |    | |  | | |     | |      | |
-| |     _| |_    | | | _| |_\   |_  | | |  |`\____) |  | | |    _| |_     | | | _/ /    \ \_ | | |   _| |__) |  | | |  \  `--'  /  | | |    _| |_     | |
-| |    |_____|   | | ||_____|\____| | | |  |_______.'  | | |   |_____|    | | ||____|  |____|| | |  |_______/   | | |   `.____.'   | | |   |_____|    | |
-| |              | | |              | | |              | | |              | | |              | | |              | | |              | | |              | |
-| '--------------' | '--------------' | '--------------' | '--------------' | '--------------' | '--------------' | '--------------' | '--------------' |
- '----------------' '----------------' '----------------' '----------------' '----------------' '----------------' '----------------' '----------------' 
-
-        \033[0m''')
-print '\033[1mHey! Welcome to instaBot!'
-user_name = raw_input("\033[1m Kindly enter your username for which the Access Token is valid : ")
-#start_bot(user_name)
-
 # Method to select posts with some special criterion
 def special_selection():
     print("Select one of the following : ")
@@ -601,4 +551,62 @@ def special_selection():
         print("...")
     else:
         print("\033[31mEnter correct value!!")
+
+# Method to start the bot.
+def start_bot(user_name):
+    while True:
+        print '\033[34mHere are your menu options:\n'
+        print "\033[34mA.Get details about a user\n"
+        print "\033[34mB.Get the recent post of a user\n"
+        print "\033[34mB.Like the recent  post of a user\n"
+        print "\033[34mD.Get the recent media liked by you\n"
+        print "\033[34mE.Get a list of comments on the recent post of a user\n"
+        print "\033[34mF.Make a comment on the recent post of a user\n"
+        print "\033[34mG.Fetch special posts related to natural disasters for a particular location\n"
+        print "\033[34mH.Download posts related to a certain criterion\n"
+        print "\033[34mI.Exit"
+        choice = raw_input("Enter you choice: ")
+        if choice.upper() == 'A':
+            get_info(user_name)
+        elif choice.upper() == 'B':
+            get_posts(user_name)
+        elif choice.upper() == 'C':
+            post_like(user_name)
+        elif choice.upper() == 'D':
+            recent_liked_media()
+        elif choice.upper() == 'E':
+            get_info(user_name)
+        elif choice.upper() == 'F':
+            post_comment(user_name)
+        elif choice.upper() == 'G':
+            fetch_special_posts(user_name)
+        elif choice.upper() == 'H':
+            special_selection()
+        elif choice.upper() == 'I':
+            exit()
+        else:
+            print("\033[31mKindly select a valid option!!")
+
+
+
+print '\n'
+print('''\033[35m 
+
+ .----------------. .-----------------..----------------. .----------------. .----------------. .----------------. .----------------. .----------------. 
+| .--------------. | .--------------. | .--------------. | .--------------. | .--------------. | .--------------. | .--------------. | .--------------. |
+| |     _____    | | | ____  _____  | | |    _______   | | |  _________   | | |      __      | | |   ______     | | |     ____     | | |  _________   | |
+| |    |_   _|   | | ||_   \|_   _| | | |   /  ___  |  | | | |  _   _  |  | | |     /  \     | | |  |_   _ \    | | |   .'    `.   | | | |  _   _  |  | |
+| |      | |     | | |  |   \ | |   | | |  |  (__ \_|  | | | |_/ | | \_|  | | |    / /\ \    | | |    | |_) |   | | |  /  .--.  \  | | | |_/ | | \_|  | |
+| |      | |     | | |  | |\ \| |   | | |   '.___`-.   | | |     | |      | | |   / ____ \   | | |    |  __'.   | | |  | |    | |  | | |     | |      | |
+| |     _| |_    | | | _| |_\   |_  | | |  |`\____) |  | | |    _| |_     | | | _/ /    \ \_ | | |   _| |__) |  | | |  \  `--'  /  | | |    _| |_     | |
+| |    |_____|   | | ||_____|\____| | | |  |_______.'  | | |   |_____|    | | ||____|  |____|| | |  |_______/   | | |   `.____.'   | | |   |_____|    | |
+| |              | | |              | | |              | | |              | | |              | | |              | | |              | | |              | |
+| '--------------' | '--------------' | '--------------' | '--------------' | '--------------' | '--------------' | '--------------' | '--------------' |
+ '----------------' '----------------' '----------------' '----------------' '----------------' '----------------' '----------------' '----------------' 
+
+        \033[0m''')
+print '\033[1mHey! Welcome to instaBot!'
+user_name = raw_input("\033[1m Kindly enter your username for which the Access Token is valid : ")
+
+start_bot(user_name)
 
